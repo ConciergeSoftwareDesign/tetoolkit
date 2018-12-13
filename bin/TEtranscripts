@@ -95,7 +95,7 @@ class UnknownChrom(Exception):
     pass
 
 # Reading files containing alignments (BAM of SAM)
-def count_reads(samples, format, geneIdx, teIdx, intronIdx, stranded, te_mode, sortByPos, prj_name,numItr,fragLength,maxL, b_origcnt):
+def count_reads(samples, format, geneIdx, teIdx, intronIdx, stranded, te_mode, sortByPos, prj_name,numItr,fragLength,maxL, b_origcnt, b_pairedreadname):
     cnt_ele_tbl = {}
     cnt_instance_tbl = {}
     discounted_ele_tbl = {}
@@ -108,7 +108,7 @@ def count_reads(samples, format, geneIdx, teIdx, intronIdx, stranded, te_mode, s
             sys.exit(1)
     try:
         for filename in samples :
-            (gene_counts,te_instance_counts,intron_counts) = count_transcript_abundance(filename,format,geneIdx,teIdx,intronIdx, stranded,te_mode, sortByPos, prj_name,numItr,fragLength,maxL, b_origcnt)
+            (gene_counts,te_instance_counts,intron_counts) = count_transcript_abundance(filename,format,geneIdx,teIdx,intronIdx, stranded,te_mode, sortByPos, prj_name,numItr,fragLength,maxL, b_origcnt, b_pairedreadname)
            
             #create dict from te count arrays 
             te_i_cnts_dict = teIdx.countByName(te_instance_counts)
@@ -291,7 +291,7 @@ def readInAlignment(filename, format, sortByPos,prj_name):
     return samfile
 
 
-def count_transcript_abundance(filename, format, geneIdx, teIdx, intronIdx, stranded, te_mode, sortByPos, prj_name,numItr,fragLength,maxL,b_origcnt):
+def count_transcript_abundance(filename, format, geneIdx, teIdx, intronIdx, stranded, te_mode, sortByPos, prj_name,numItr,fragLength,maxL, b_origcnt, b_pairedreadname):
     #read in BAM/SAM file
     samfile = readInAlignment(filename, format, sortByPos,prj_name)
 
@@ -1058,9 +1058,9 @@ def main():
     discounted_c_ele_tbl = None
     discounted_c_i_tbl = None
     csamples_rpm = 0
-    (tsamples_ele_tbl, tsamples_instance_tbl, discounted_t_ele_tbl, discounted_t_i_tbl, tsamples_rpm) = count_reads(args.tfiles, args.parser, geneIdx, teIdx, intronIdx, args.stranded, args.te_mode, args.sortByPos, args.prj_name,args.numItr,args.fragLength,args.maxL, args.b_origcnt)
+    (tsamples_ele_tbl, tsamples_instance_tbl, discounted_t_ele_tbl, discounted_t_i_tbl, tsamples_rpm) = count_reads(args.tfiles, args.parser, geneIdx, teIdx, intronIdx, args.stranded, args.te_mode, args.sortByPos, args.prj_name,args.numItr,args.fragLength,args.maxL, args.b_origcnt, args.b_pairedreadname)
     if args.cfiles:
-        (csamples_ele_tbl, csamples_instance_tbl, discounted_c_ele_tbl, discounted_c_i_tbl, csamples_rpm) = count_reads(args.cfiles, args.parser, geneIdx, teIdx, intronIdx, args.stranded, args.te_mode, args.sortByPos, args.prj_name,args.numItr,args.fragLength,args.maxL, args.b_origcnt)
+        (csamples_ele_tbl, csamples_instance_tbl, discounted_c_ele_tbl, discounted_c_i_tbl, csamples_rpm) = count_reads(args.cfiles, args.parser, geneIdx, teIdx, intronIdx, args.stranded, args.te_mode, args.sortByPos, args.prj_name,args.numItr,args.fragLength,args.maxL, args.b_origcnt, args.b_pairedreadname)
     
     info("Finished processing sample files")
 
